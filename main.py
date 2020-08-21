@@ -23,8 +23,8 @@ class Bullet(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load('./images/bullet.png')
         self.rect = self.image.get_rect()
-        self.xBullet = xBullet
-        self.yBullet = yBullet
+        self.rect.x = xBullet
+        self.rect.y = yBullet
         self.bulletSpeed = 10
     
 def check_events(): #Checks all the events happening 'in-canvas'.
@@ -50,17 +50,19 @@ def enemy_movement(yEnemy, enemySpeed):  #Enemy movement using Keyboard.
     return yEnemy
 
 def bullet_movement(img, xBullet, yBullet, bulletSpeed, xPlayer):
-    if pygame.mouse.get_pressed() == (1, 0, 0) and bullet.yBullet == 500:
+    if pygame.mouse.get_pressed() == (1, 0, 0) and yBullet == 500:
         xBullet = xPlayer+24
     if pygame.mouse.get_pressed() == (1, 0, 0):
         yBullet -= bulletSpeed
         if yBullet < 0:
             yBullet = 500
+            xBullet = xPlayer+24
         return xBullet, yBullet
     elif pygame.mouse.get_pressed() == (0, 0, 0) and yBullet < 500:
         yBullet -= bulletSpeed
         if yBullet < 0:
             yBullet = 500
+            xBullet = xPlayer+24
         return xBullet, yBullet
     return xPlayer+24, yBullet
 
@@ -71,15 +73,15 @@ if __name__ == '__main__':
     background = pygame.image.load('./images/background.png')
     player = Player(370, 510)
     bullet = Bullet(500, 500)
-    flag = 0
+    hitFlag = 0
     score = 0
-    block_list = pygame.sprite.Group()
-    all_sprites_list = pygame.sprite.Group()
-    enemies = [Enemy(random.randint(0, 200), random.randint(0, 300)),
-               Enemy(random.randint(250, 500), random.randint(0, 300)),
-               Enemy(random.randint(550, 700), random.randint(0, 300))]
-    block_list.add(enemies)
-    all_sprites_list.add(enemies)
+    enemies = [Enemy(random.randint(0, 200), random.randint(0, 100)),
+               Enemy(random.randint(250, 500), random.randint(0, 100)),
+               Enemy(random.randint(550, 700), random.randint(0, 100))]
+    enemySprites = pygame.sprite.Group()
+    allSprites = pygame.sprite.Group()
+    enemySprites.add(enemies)
+    allSprites.add(enemies, bullet)
     while showCanvas:
         canvas.fill((0, 0, 0))
         canvas.blit(background, (0, 0))
@@ -89,23 +91,18 @@ if __name__ == '__main__':
             enemy.rect.y = enemy.yEnemy
             enemy.rect.x = enemy.xEnemy
         player.xPlayer = player_movement(player.xPlayer, player.playerSpeed)
-        bullet.xBullet, bullet.yBullet = bullet_movement(bullet.image, 
-                                                         bullet.xBullet, 
-                                                         bullet.yBullet, 
-                                                         bullet.bulletSpeed, 
-                                                         player.xPlayer)
-        bullet.rect.x = bullet.xBullet
-        bullet.rect.y = bullet.yBullet
-        all_sprites_list.add(bullet)
-        blocks_hit_list = pygame.sprite.spritecollide(bullet, block_list, True)
+        bullet.rect.x, bullet.rect.y = bullet_movement(bullet.image, bullet.rect.x, bullet.rect.y, bullet.bulletSpeed, player.xPlayer)
+        allSprites.draw(canvas)
+
+        blocks_hit_list = pygame.sprite.spritecollide(bullet, enemySprites, True)
         for block in blocks_hit_list:
             score +=1 
-            flag = 1
+            hitFlag = 1
             print(score)
-        if flag == 1:
+        if hitFlag == 1:
             bullet.yBullet = 500
-            flag = 0
-        all_sprites_list.draw(canvas)
+            hitFlag = 0
+        
 
         #Checking Events and Updating Canvas
         showCanvas = check_events()
