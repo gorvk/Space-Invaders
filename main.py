@@ -16,7 +16,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.xEnemy = xEnemy
         self.yEnemy = yEnemy
-        self.enemySpeed = 0.4
+        self.enemySpeed = 1
         
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, xBullet, yBullet):
@@ -50,18 +50,18 @@ def enemy_movement(yEnemy, enemySpeed):  #Enemy movement using Keyboard.
     return yEnemy
 
 def bullet_movement(img, xBullet, yBullet, bulletSpeed, xPlayer):
-    if pygame.mouse.get_pressed() == (1, 0, 0) and yBullet == 500:
+    if pygame.mouse.get_pressed() == (1, 0, 0) and yBullet == 530:
         xBullet = xPlayer+24
     if pygame.mouse.get_pressed() == (1, 0, 0):
         yBullet -= bulletSpeed
         if yBullet < 0:
-            yBullet = 500
+            yBullet = 530
             xBullet = xPlayer+24
         return xBullet, yBullet
-    elif pygame.mouse.get_pressed() == (0, 0, 0) and yBullet < 500:
+    elif pygame.mouse.get_pressed() == (0, 0, 0) and yBullet < 530:
         yBullet -= bulletSpeed
         if yBullet < 0:
-            yBullet = 500
+            yBullet = 530
             xBullet = xPlayer+24
         return xBullet, yBullet
     return xPlayer+24, yBullet
@@ -72,38 +72,51 @@ if __name__ == '__main__':
     showCanvas = True
     background = pygame.image.load('./images/background.png')
     player = Player(370, 510)
-    bullet = Bullet(500, 500)
-    hitFlag = 0
+    bullet = Bullet(500, 530)
+    gameFlag = 0
     score = 0
-    enemies = [Enemy(random.randint(0, 200), random.randint(0, 100)),
-               Enemy(random.randint(250, 500), random.randint(0, 100)),
-               Enemy(random.randint(550, 700), random.randint(0, 100))]
+    enemies = [Enemy(random.randint(0, 100), random.randint(0, 100)),
+               Enemy(random.randint(0, 300), random.randint(0, 100)),
+               Enemy(random.randint(0, 400), random.randint(0, 100)),
+               Enemy(random.randint(0, 600), random.randint(0, 100)),
+               Enemy(random.randint(0, 700), random.randint(0, 100))]
     enemySprites = pygame.sprite.Group()
     allSprites = pygame.sprite.Group()
     enemySprites.add(enemies)
     allSprites.add(enemies, bullet)
+    scoreFont = pygame.font.SysFont(None, 40)
+    gameOverFont = pygame.font.SysFont(None, 100)
     while showCanvas:
-        canvas.fill((0, 0, 0))
-        canvas.blit(background, (0, 0))
-        canvas.blit(player.img, (player.xPlayer, player.yPlayer))
-        for enemy in enemies:
-            enemy.yEnemy = enemy_movement(enemy.yEnemy, enemy.enemySpeed)        
-            enemy.rect.y = enemy.yEnemy
-            enemy.rect.x = enemy.xEnemy
-        player.xPlayer = player_movement(player.xPlayer, player.playerSpeed)
-        bullet.rect.x, bullet.rect.y = bullet_movement(bullet.image, bullet.rect.x, bullet.rect.y, bullet.bulletSpeed, player.xPlayer)
-        allSprites.draw(canvas)
-
-        blocks_hit_list = pygame.sprite.spritecollide(bullet, enemySprites, True)
-        for block in blocks_hit_list:
-            score +=1 
-            hitFlag = 1
-            print(score)
-        if hitFlag == 1:
-            bullet.yBullet = 500
-            hitFlag = 0
-        
-
+        if gameFlag == 0:
+            canvas.fill((0, 0, 0))
+            canvas.blit(background, (0, 0))
+            scoreImg = scoreFont.render(f"Score : {str(score)}", True, (0,255,0))
+            canvas.blit(scoreImg, (20, 20))
+            for enemy in enemies:
+                enemy.yEnemy = enemy_movement(enemy.yEnemy, enemy.enemySpeed)        
+                enemy.rect.y = enemy.yEnemy
+                enemy.rect.x = enemy.xEnemy
+                if enemy.rect.y >= 420:
+                    gameFlag = 1
+            player.xPlayer = player_movement(player.xPlayer, player.playerSpeed)
+            bullet.rect.x, bullet.rect.y = bullet_movement(bullet.image, bullet.rect.x, bullet.rect.y, bullet.bulletSpeed, player.xPlayer)
+            allSprites.draw(canvas)
+            canvas.blit(player.img, (player.xPlayer, player.yPlayer))
+            blocks_hit_list = pygame.sprite.spritecollide(bullet, enemySprites, False)
+            for block in blocks_hit_list:
+                score +=1
+                block.xEnemy = random.randint(0, 700)
+                block.yEnemy = random.randint(0, 200)
+                bullet.rect.y = 530
+                hitFlag = 0
+        elif gameFlag == 1:
+            gameOverImg = gameOverFont.render("GAME OVER", True, (0,255,0))
+            canvas.blit(background, (0, 0))
+            canvas.blit(player.img, (player.xPlayer, player.yPlayer))
+            allSprites.draw(canvas)
+            canvas.blit(gameOverImg, (400/2, 300/2))
+            canvas.blit(scoreImg, (700/2, 500/2))
+            
         #Checking Events and Updating Canvas
         showCanvas = check_events()
         pygame.display.update()
