@@ -4,7 +4,7 @@ pygame.init()
 
 class Player:
     def __init__(self, xPlayer, yPlayer):
-        self.img = pygame.image.load('./images/player1.png')
+        self.img = pygame.image.load('./images/player.png')
         self.xPlayer = xPlayer
         self.yPlayer = yPlayer
         self.playerSpeed = 11
@@ -12,7 +12,7 @@ class Player:
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, xEnemy, yEnemy):
         super().__init__()
-        self.image = pygame.image.load('./images/enemy2.png')
+        self.image = pygame.image.load('./images/enemy.png')
         self.rect = self.image.get_rect()
         self.xEnemy = xEnemy
         self.yEnemy = yEnemy
