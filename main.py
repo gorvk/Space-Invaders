@@ -4,15 +4,15 @@ pygame.init()
 
 class Player:
     def __init__(self, xPlayer, yPlayer):
-        self.img = pygame.image.load('./images/player.png')
+        self.img = pygame.image.load('./images/player1.png')
         self.xPlayer = xPlayer
         self.yPlayer = yPlayer
-        self.playerSpeed = 7
+        self.playerSpeed = 11
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, xEnemy, yEnemy):
         super().__init__()
-        self.image = pygame.image.load('./images/enemy.png')
+        self.image = pygame.image.load('./images/enemy2.png')
         self.rect = self.image.get_rect()
         self.xEnemy = xEnemy
         self.yEnemy = yEnemy
@@ -25,7 +25,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = xBullet
         self.rect.y = yBullet
-        self.bulletSpeed = 10
+        self.bulletSpeed = 14
     
 def check_events(): #Checks all the events happening 'in-canvas'.
     for events in pygame.event.get():
@@ -84,13 +84,13 @@ if __name__ == '__main__':
     allSprites = pygame.sprite.Group()
     enemySprites.add(enemies)
     allSprites.add(enemies, bullet)
-    scoreFont = pygame.font.SysFont(None, 40)
-    gameOverFont = pygame.font.SysFont(None, 100)
+    scoreFont = pygame.font.Font("./font/font.ttf", 20)
+    gameOverFont = pygame.font.Font("./font/font.ttf", 50)
     while showCanvas:
         if gameFlag == 0:
             canvas.fill((0, 0, 0))
             canvas.blit(background, (0, 0))
-            scoreImg = scoreFont.render(f"Score : {str(score)}", True, (0,255,0))
+            scoreImg = scoreFont.render(f"SCORE : {str(score)}", True, (0,255,0))
             canvas.blit(scoreImg, (20, 20))
             for enemy in enemies:
                 enemy.yEnemy = enemy_movement(enemy.yEnemy, enemy.enemySpeed)        
@@ -112,11 +112,11 @@ if __name__ == '__main__':
         elif gameFlag == 1:
             gameOverImg = gameOverFont.render("GAME OVER", True, (0,255,0))
             canvas.blit(background, (0, 0))
-            canvas.blit(player.img, (player.xPlayer, player.yPlayer))
             allSprites.draw(canvas)
-            canvas.blit(gameOverImg, (400/2, 300/2))
-            canvas.blit(scoreImg, (700/2, 500/2))
+            canvas.blit(player.img, (player.xPlayer, player.yPlayer))
+            canvas.blit(gameOverImg, (350/2, 300/2))
+            canvas.blit(scoreImg, (600/2, 500/2))
             
         #Checking Events and Updating Canvas
-        showCanvas = check_events()
+        showCanvas = check_events() 
         pygame.display.update()
