@@ -16,7 +16,7 @@ Bullet are drawn infinitly on the screen. When the bullet is fired it's postion 
 **Python** : This game is purely made in Python Programming Language.<br>
 **Pygame**: Pygame is a module provided by Python to create games in Python Programming Language.<br>(Link to Official Documentation is given below in Resources and References section).<br>
 <br>
-<img src = "./images/README-images/Game-Play.png" width=400><br>
+![Game-Play](https://user-images.githubusercontent.com/52004037/214095026-1264db93-98c1-45fd-8a08-1a645fdd3c89.png)
 
 ## **Keyboard keys for Player movement** : <br>
 <kbd>A</kbd> is used for moving player to the Left.<br>
