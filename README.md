@@ -1,6 +1,6 @@
 # **Space Invaders**
 
-***Copy of Space Invaders tried using Pygame.<br>A arcade style game where player have to shoot aliens which are attacking on our planet before they touch the ground. 
+***Copy of Space Invaders for Linux using Python & Pygame.<br>A arcade style game where player have to shoot aliens which are attacking on our planet before they touch the ground. 
 <br>Player can play this game endless and keep increasing the score.***
 <br>
 <br>
